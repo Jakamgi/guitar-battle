@@ -5,12 +5,21 @@
   <title>Batalla Guitar Hero: Yngwie vs el Mundo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- Fuente retro tipo arcade -->
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+
   <style>
     :root {
+      --bg1: #0f0c29;
+      --bg2: #302b63;
+      --bg3: #24243e;
+      --accent: #ff2e63;
+      --accent2: #ff9f1c;
+      --text: #f8f8ff;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #1a1a2e, #000);
-      color: #f8f8ff;
     }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -19,93 +28,273 @@
       justify-content: center;
       padding: 12px;
       box-sizing: border-box;
+      color: var(--text);
+      background: radial-gradient(circle at top, var(--bg2), var(--bg1), #000);
+      background-size: 200% 200%;
+      animation: bg-move 18s ease-in-out infinite;
+      overflow-x: hidden;
     }
+
+    @keyframes bg-move {
+      0% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+
     .app {
       max-width: 900px;
       width: 100%;
+      position: relative;
     }
+
     .card {
-      background: rgba(10,10,25,0.92);
+      background: radial-gradient(circle at top,
+                  rgba(255,255,255,0.06),
+                  rgba(5,5,20,0.96));
       border-radius: 18px;
       padding: 22px 18px 20px;
-      box-shadow: 0 18px 45px rgba(0,0,0,0.75);
-      border: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.85);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
       animation: fadeIn 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
     }
+
+    /* Líneas diagonales retro */
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background-image:
+        linear-gradient(120deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(300deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
     h1 {
-      font-size: 2.1rem;
+      font-size: 1.9rem;
       margin: 0 0 6px;
       text-align: center;
+      font-family: "Press Start 2P", system-ui, sans-serif;
+      letter-spacing: 0.04em;
+      text-shadow: 0 3px 0 #000;
     }
+
     .subtitle {
       text-align: center;
       opacity: 0.85;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
     }
+
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       padding: 3px 10px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.2);
       border-radius: 999px;
       font-size: 0.75rem;
     }
+
     .center-row {
       display: flex;
       justify-content: center;
       margin-top: 10px;
       margin-bottom: 4px;
     }
+
     button {
       border-radius: 999px;
       border: none;
       padding: 9px 18px;
-      font-size: 0.95rem;
-      font-weight: 600;
+      font-size: 0.9rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: 0.12s ease;
+      transition: transform 0.1s ease, box-shadow 0.12s ease, background 0.12s;
+      position: relative;
+      z-index: 1;
     }
+
     .btn-primary {
-      background: linear-gradient(135deg,#ff9f1c,#ff2e63);
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
       color: #fff;
-      box-shadow: 0 4px 18px rgba(255,46,99,0.6);
-      animation: pulse 1.8s infinite;
+      box-shadow: 0 4px 18px rgba(255,46,99,0.7);
+      text-shadow: 0 1px 0 #000;
     }
+
+    .btn-primary:hover {
+      transform: translateY(-1px) scale(1.01);
+      box-shadow: 0 7px 26px rgba(255,46,99,0.9);
+    }
+
     .btn-ghost {
-      background: rgba(255,255,255,0.06);
-      color: #f8f8ff;
+      background: rgba(0,0,0,0.6);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.35);
+    }
+
+    .btn-ghost:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .questions {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .round-title {
+      font-size: 0.85rem;
+      margin: 16px 0 6px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      opacity: 0.9;
+      font-family: "Press Start 2P", system-ui, sans-serif;
+    }
+
+    .question {
+      background: rgba(0,0,0,0.7);
+      border-radius: 12px;
+      padding: 10px 12px;
       border: 1px solid rgba(255,255,255,0.18);
     }
-    .hidden { display: none; }
-    @keyframes pulse {
-      0%,100% { transform: scale(1); }
-      50% { transform: scale(1.03); }
+
+    .question-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
     }
-    .questions { margin-top: 16px; display:flex; flex-direction:column; gap:14px; }
-    .round-title { font-size:1.1rem; margin:14px 0 4px; font-weight:700; }
-    .question {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 10px 12px;
-      border-radius: 12px;
+
+    .question-sub {
+      font-size: 0.78rem;
+      opacity: 0.75;
+      margin-bottom: 6px;
     }
-    .option { display:flex; gap:6px; margin:4px 0; cursor:pointer; }
-    .footer { margin-top:18px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+
+    .option {
+      display: flex;
+      gap: 6px;
+      margin: 4px 0;
+      font-size: 0.84rem;
+      cursor: pointer;
+      align-items: flex-start;
+    }
+
+    .option input {
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    .footer {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
     .result {
-      margin-top:14px;
-      border-radius:12px;
-      padding:12px;
-      background:rgba(5,199,120,0.08);
-      border:1px solid rgba(5,199,120,0.4);
+      margin-top: 14px;
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(5,199,120,0.1);
+      border: 1px solid rgba(5,199,120,0.5);
+      font-size: 0.9rem;
+      position: relative;
+      z-index: 1;
     }
+
     .ranking {
-      margin-top:16px;
-      padding:12px;
-      border-radius:12px;
-      background:rgba(255,255,255,0.04);
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.75);
+      border: 1px solid rgba(255,255,255,0.25);
+      font-size: 0.85rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hidden { display: none; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0);   }
+    }
+
+    /* Pantalla de medalla / resultado final */
+    .medal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .medal-card {
+      background: radial-gradient(circle at top, #2a2a72, #000);
+      border-radius: 18px;
+      padding: 20px 18px;
+      max-width: 420px;
+      width: 90%;
+      border: 1px solid rgba(255,255,255,0.35);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.9);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .medal-emoji {
+      font-size: 3rem;
+      margin-bottom: 8px;
+    }
+
+    .medal-title {
+      font-family: "Press Start 2P", system-ui, sans-serif;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .medal-text {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    /* Confeti simple */
+    .confetti-piece {
+      position: absolute;
+      width: 6px;
+      height: 12px;
+      background: #ff2e63;
+      top: -20px;
+      animation: confetti-fall 1.4s linear forwards;
+    }
+
+    @keyframes confetti-fall {
+      to {
+        transform: translateY(260px) rotateZ(180deg);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.4rem; }
+      .question-title { font-size: 0.86rem; }
+      .option { font-size: 0.8rem; }
     }
   </style>
 </head>
@@ -113,233 +302,360 @@
 <body>
 <div class="app">
 
-<!-- ——— PANTALLA DE INICIO ——— -->
-<div class="card" id="startScreen">
+  <!-- PANTALLA DE INICIO -->
+  <div class="card" id="startScreen">
+    <div style="display:flex; justify-content:center; margin-bottom:12px; position:relative; z-index:1;">
+      <img src="yngwie.jpg"
+           alt="Imagen subida por el usuario"
+           style="max-width:320px; width:100%; border-radius:14px; box-shadow:0 0 26px rgba(255,0,0,0.55);">
+    </div>
 
-  <!-- Imagen proporcionada por el usuario -->
-  <div style="display:flex; justify-content:center; margin-bottom:12px;">
-    <img src="yngwie.jpg" alt="Imagen subida por el usuario"
-         style="max-width:320px; border-radius:14px; box-shadow:0 0 26px rgba(255,0,0,0.45);">
-  </div>
+    <div class="center-row" style="position:relative; z-index:1;">
+      <span class="badge">🤘 Noche de shred entre colegas</span>
+    </div>
 
-  <div class="center-row">
-    <span class="badge">🤘 Noche de shred entre colegas</span>
-  </div>
+    <h1>Batalla Guitar Hero</h1>
+    <p class="subtitle">
+      Yngwie contra el mundo. 10 preguntas, estilo arcade retro y ranking de la peña.
+    </p>
 
-  <h1>Batalla Guitar Hero</h1>
-  <p class="subtitle">Yngwie contra el mundo. 10 preguntas, ranking y épica metalera.</p>
+    <div class="center-row">
+      <button id="btnStart" class="btn-primary">Empezar la batalla 🔥</button>
+    </div>
 
-  <div class="center-row">
-    <button id="btnStart" class="btn-primary">Empezar la batalla 🔥</button>
-  </div>
+    <div class="center-row">
+      <button id="btnShowRules" class="btn-ghost">Ver reglas</button>
+    </div>
 
-  <div class="center-row">
-    <button id="btnShowRules" class="btn-ghost">Ver reglas</button>
-  </div>
-
-  <div id="rules" class="result hidden">
-    10 preguntas. A=3 pts, B=2, C=1. Guarda tu puntuación en el ranking.
-  </div>
-</div>
-
-<!-- ——— PANTALLA DE JUEGO ——— -->
-<div class="card hidden" id="gameScreen">
-
-  <h1>Batalla Guitar Hero ⚔️🎸</h1>
-
-  <!-- Video -->
-  <div style="display:flex; justify-content:center; margin:14px 0;">
-    <div style="max-width:560px; width:100%; aspect-ratio:16/9;">
-      <iframe
-        style="width:100%; height:100%; border-radius:12px;"
-        src="https://www.youtube.com/embed/rr9SEA3vIco"
-        allowfullscreen></iframe>
+    <div id="rules" class="result hidden">
+      10 preguntas en 2 rondas. A = 3 pts, B = 2, C = 1.
+      Guarda tu puntuación y montad el ranking guitarrero de la noche.
     </div>
   </div>
 
-  <p class="subtitle">Responde, ríete y compite con tu grupo.</p>
+  <!-- PANTALLA DE JUEGO -->
+  <div class="card hidden" id="gameScreen">
+    <h1>Batalla Guitar Hero ⚔️🎸</h1>
 
-  <div id="questions" class="questions"></div>
+    <!-- Vídeo YouTube -->
+    <div style="display:flex; justify-content:center; margin:14px 0; position:relative; z-index:1;">
+      <div style="max-width:560px; width:100%; aspect-ratio:16/9;">
+        <iframe
+          style="width:100%; height:100%; border-radius:12px; border:none;"
+          src="https://www.youtube.com/embed/rr9SEA3vIco"
+          title="Video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
 
-  <div class="footer">
-    <button id="btnCalcular" class="btn-primary">Ver resultado 🤘</button>
-    <button id="btnReset" class="btn-ghost">Reiniciar</button>
-    <button id="btnBack" class="btn-ghost">Volver</button>
-    <button id="btnCopiar" class="btn-ghost">Copiar</button>
+    <p class="subtitle">
+      Responde sin miedo, escucha los clics retro y destruye el ranking.
+    </p>
+
+    <div id="questions" class="questions"></div>
+
+    <div class="footer">
+      <button id="btnCalcular" class="btn-primary">Ver resultado 🤘</button>
+      <button id="btnReset" class="btn-ghost">Reiniciar</button>
+      <button id="btnBack" class="btn-ghost">Volver</button>
+      <button id="btnCopiar" class="btn-ghost">Copiar</button>
+    </div>
+
+    <div id="result" class="result hidden"></div>
+
+    <div style="display:flex; gap:8px; justify-content:center; margin-top:12px; position:relative; z-index:1;">
+      <input id="playerName" type="text" placeholder="Tu nombre"
+             style="padding:6px 10px; border-radius:12px; border:1px solid rgba(255,255,255,0.4);
+                    background:rgba(0,0,0,0.7); color:#fff;">
+      <button id="btnSave" class="btn-primary">Guardar 🏆</button>
+    </div>
+
+    <div id="ranking" class="ranking hidden">
+      <strong>Ranking de la noche 🏆</strong>
+      <ol id="rankingList"></ol>
+    </div>
   </div>
 
-  <div id="result" class="result hidden"></div>
-
-  <div style="display:flex; gap:8px; justify-content:center; margin-top:12px;">
-    <input id="playerName" type="text" placeholder="Tu nombre"
-           style="padding:6px 10px; border-radius:12px;">
-    <button id="btnSave" class="btn-primary">Guardar 🏆</button>
+  <!-- Overlay de medalla -->
+  <div id="medalOverlay" class="medal-overlay hidden">
+    <div class="medal-card" id="medalCard">
+      <div id="medalEmoji" class="medal-emoji">🏅</div>
+      <div id="medalTitle" class="medal-title">Rango</div>
+      <p id="medalText" class="medal-text"></p>
+      <button id="btnCloseMedal" class="btn-primary" style="margin-top:12px;">Cerrar</button>
+    </div>
   </div>
-
-  <div id="ranking" class="ranking hidden">
-    <strong>Ranking 🏆</strong>
-    <ol id="rankingList"></ol>
-  </div>
-</div>
 
 </div>
 
 <script>
-/* ————————————————————————————
-   MOSTRAR Y OCULTAR PANTALLAS
-———————————————————————————— */
+  // Referencias DOM
+  const startScreen   = document.getElementById("startScreen");
+  const gameScreen    = document.getElementById("gameScreen");
+  const btnStart      = document.getElementById("btnStart");
+  const btnShowRules  = document.getElementById("btnShowRules");
+  const rules         = document.getElementById("rules");
+  const questionsBox  = document.getElementById("questions");
+  const btnCalcular   = document.getElementById("btnCalcular");
+  const btnReset      = document.getElementById("btnReset");
+  const btnBack       = document.getElementById("btnBack");
+  const btnCopiar     = document.getElementById("btnCopiar");
+  const resultBox     = document.getElementById("result");
+  const playerNameInp = document.getElementById("playerName");
+  const btnSave       = document.getElementById("btnSave");
+  const rankingBox    = document.getElementById("ranking");
+  const rankingList   = document.getElementById("rankingList");
 
-btnStart.onclick = () => {
-  startScreen.classList.add("hidden");
-  gameScreen.classList.remove("hidden");
-};
+  const medalOverlay  = document.getElementById("medalOverlay");
+  const medalCard     = document.getElementById("medalCard");
+  const medalEmoji    = document.getElementById("medalEmoji");
+  const medalTitle    = document.getElementById("medalTitle");
+  const medalText     = document.getElementById("medalText");
+  const btnCloseMedal = document.getElementById("btnCloseMedal");
 
-btnShowRules.onclick = () =>
-  rules.classList.toggle("hidden");
-
-btnBack.onclick = () => {
-  gameScreen.classList.add("hidden");
-  startScreen.classList.remove("hidden");
-};
-
-/* ————————————————————————————
-   PREGUNTAS COMPLETAS
-———————————————————————————— */
-
-const preguntasHTML = `
-<div class="round-title">Ronda 1 – Calentamiento infernal</div>
-
-<div class="question">
-  <div class="question-title">1. Yngwie vs. Steve Vai – “La Dimensión del Solo Infinito”</div>
-  <div class="question-sub">¿Quién domina el multiverso guitarrístico?</div>
-  <label class="option"><input type="radio" name="q1" value="A"> A) Yngwie, porque MORE IS MORE en todos los universos.</label>
-  <label class="option"><input type="radio" name="q1" value="B"> B) Vai, porque tiene pedales que hablan idiomas imposibles.</label>
-  <label class="option"><input type="radio" name="q1" value="C"> C) Se abre un portal y salen más solos.</label>
-</div>
-
-<div class="question">
-  <div class="question-title">2. Yngwie vs. Eddie Van Halen – “La Batalla del Tapping Legendario”</div>
-  <div class="question-sub">¿Quién se queda con el trono?</div>
-  <label class="option"><input type="radio" name="q2" value="A"> A) Yngwie metería 400 notas antes del primer tapping.</label>
-  <label class="option"><input type="radio" name="q2" value="B"> B) Eddie inventa otro truco nuevo.</label>
-  <label class="option"><input type="radio" name="q2" value="C"> C) Ambos derriten el escenario.</label>
-</div>
-
-<div class="question">
-  <div class="question-title">3. Yngwie vs. Joe Satriani – “El Duelo de los Extraterrestres”</div>
-  <div class="question-sub">¿Quién manda en la galaxia sonora?</div>
-  <label class="option"><input type="radio" name="q3" value="A"> A) Yngwie: densidad de notas extrema.</label>
-  <label class="option"><input type="radio" name="q3" value="B"> B) Satriani no es humano.</label>
-  <label class="option"><input type="radio" name="q3" value="C"> C) Llegan aliens a pedirles clases.</label>
-</div>
-
-<div class="question">
-  <div class="question-title">4. Yngwie vs. Dimebag Darrell – “Guisos de Armónicos Artificiales”</div>
-  <div class="question-sub">¿Quién gana?</div>
-  <label class="option"><input type="radio" name="q4" value="A"> A) Yngwie: rompe la sartén con un arpegio.</label>
-  <label class="option"><input type="radio" name="q4" value="B"> B) Dimebag rompe móviles con un squeal.</label>
-  <label class="option"><input type="radio" name="q4" value="C"> C) El técnico dimite.</label>
-</div>
-
-<div class="question">
-  <div class="question-title">5. Yngwie vs. Petrucci – “Laboratorio de BPM Prohibidos”</div>
-  <label class="option"><input type="radio" name="q5" value="A"> A) Yngwie: el metrónomo pide piedad.</label>
-  <label class="option"><input type="radio" name="q5" value="B"> B) Petrucci entrena en gravedad artificial.</label>
-  <label class="option"><input type="radio" name="q5" value="C"> C) Destruyen tres planetas.</label>
-</div>
-
-<div class="round-title">Ronda 2 – Modo Insano</div>
-
-<div class="question">
-  <div class="question-title">6. Yngwie vs. Tony Iommi – “Riffs Oscuros”</div>
-  <label class="option"><input type="radio" name="q6" value="A"> A) Yngwie convierte riff en solo barroco.</label>
-  <label class="option"><input type="radio" name="q6" value="B"> B) Iommi oscurece la habitación.</label>
-  <label class="option"><input type="radio" name="q6" value="C"> C) Se fusionan en un monstruo riffal.</label>
-</div>
-
-<div class="question">
-  <div class="question-title">7. Yngwie vs. Kirk Hammett – “Guerra de Wah”</div>
-  <label class="option"><input type="radio" name="q7" value="A"> A) Yngwie: su ego modula más que un wah.</label>
-  <label class="option"><input type="radio" name="q7" value="B"> B) Kirk: el wah es un miembro más del grupo.</label>
-  <label class="option"><input type="radio" name="q7" value="C"> C) El wah explota.</label>
-</div>
-
-<div class="question">
-  <div class="question-title">8. Yngwie vs. Randy Rhoads – “Clase Magistral”</div>
-  <label class="option"><input type="radio" name="q8" value="A"> A) Yngwie da 3 siglos de teoría en 10 min.</label>
-  <label class="option"><input type="radio" name="q8" value="B"> B) Randy supera a tu profesor de conservatorio.</label>
-  <label class="option"><input type="radio" name="q8" value="C"> C) Arde la pizarra.</label>
-</div>
-
-<div class="question">
-  <div class="question-title">9. Yngwie vs. Slash – “Sombrero vs Casaca”</div>
-  <label class="option"><input type="radio" name="q9" value="A"> A) Yngwie: chaqueta con más notas que canciones.</label>
-  <label class="option"><input type="radio" name="q9" value="B"> B) Slash gana sin esforzarse.</label>
-  <label class="option"><input type="radio" name="q9" value="C"> C) Foros discutiendo 3 horas.</label>
-</div>
-
-<div class="question">
-  <div class="question-title">10. Jam final</div>
-  <label class="option"><input type="radio" name="q10" value="A"> A) Yngwie sigue solo hasta el amanecer.</label>
-  <label class="option"><input type="radio" name="q10" value="B"> B) Tu grupo crea un tema épico.</label>
-  <label class="option"><input type="radio" name="q10" value="C"> C) 47 vídeos sin recordar nada.</label>
-</div>
-`;
-
-questions.innerHTML = preguntasHTML;
-
-/* ————————————————————————————
-   LÓGICA DEL JUEGO
-———————————————————————————— */
-
-function calcular() {
-  let total=0, A=0, B=0, C=0;
-
-  for(let i=1;i<=10;i++){
-    const o=document.querySelector(`input[name="q${i}"]:checked`);
-    if(!o) return null;
-    if(o.value==="A"){total+=3;A++;}
-    if(o.value==="B"){total+=2;B++;}
-    if(o.value==="C"){total+=1;C++;}
+  let audioCtx = null;
+  function playClick() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "square";
+      osc.frequency.value = 880;
+      gain.gain.value = 0.12;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.07);
+    } catch (e) {
+      // Si falla, no pasa nada
+    }
   }
-  return {total,A,B,C};
-}
 
-btnCalcular.onclick = () => {
-  const r=calcular();
-  if(!r){ alert("Responde todas las preguntas"); return; }
+  // Pantallas
+  btnStart.addEventListener("click", () => {
+    playClick();
+    startScreen.classList.add("hidden");
+    gameScreen.classList.remove("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 
-  let rango="";
-  if(r.total<=10) rango="Aprendiz del Riff";
-  else if(r.total<=18) rango="Shredder Oficial";
-  else if(r.total<=25) rango="Destructor de Metrónomos";
-  else rango="Maestro del Caos Neoclásico";
+  btnShowRules.addEventListener("click", () => {
+    playClick();
+    rules.classList.toggle("hidden");
+  });
 
-  result.classList.remove("hidden");
-  result.innerHTML = `<strong>${rango}</strong><br>Puntos: ${r.total}/30<br>
-    <small>A=${r.A}, B=${r.B}, C=${r.C}</small>`;
-};
+  btnBack.addEventListener("click", () => {
+    playClick();
+    gameScreen.classList.add("hidden");
+    startScreen.classList.remove("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 
-btnReset.onclick = () => {
-  document.querySelectorAll("input[type=radio]").forEach(r=>r.checked=false);
-  result.classList.add("hidden");
-};
+  // Preguntas completas
+  const preguntasHTML = `
+    <div class="round-title">Ronda 1 – Calentamiento infernal</div>
 
-btnCopiar.onclick = async () => {
-  const r=calcular(); if(!r) return;
-  await navigator.clipboard.writeText(`Mi puntuación: ${r.total}/30 🤘`);
-  alert("Resultado copiado.");
-};
+    <div class="question">
+      <div class="question-title">1. Yngwie vs. Steve Vai – “La Dimensión del Solo Infinito”</div>
+      <div class="question-sub">¿Quién domina el multiverso guitarrístico?</div>
+      <label class="option"><input type="radio" name="q1" value="A"> A) Yngwie, porque MORE IS MORE en todos los universos.</label>
+      <label class="option"><input type="radio" name="q1" value="B"> B) Vai, porque tiene pedales que hablan idiomas imposibles.</label>
+      <label class="option"><input type="radio" name="q1" value="C"> C) Se abre un portal y salen más solos.</label>
+    </div>
 
-const ranking=[];
-btnSave.onclick = () => {
-  const r=calcular(); if(!r) return;
-  const nombre=playerName.value||"Jugador";
-  ranking.push({nombre,puntos:r.total});
-  ranking.sort((a,b)=>b.puntos-a.puntos);
-  rankingList.innerHTML = ranking.map(p=>`<li>${p.nombre} – ${p.puntos} pts</li>`).join("");
-  ranking.classList.remove("hidden");
-};
+    <div class="question">
+      <div class="question-title">2. Yngwie vs. Eddie Van Halen – “La Batalla del Tapping Legendario”</div>
+      <div class="question-sub">¿Quién se queda con el trono?</div>
+      <label class="option"><input type="radio" name="q2" value="A"> A) Yngwie metería 400 notas antes del primer tapping.</label>
+      <label class="option"><input type="radio" name="q2" value="B"> B) Eddie inventa otro truco nuevo.</label>
+      <label class="option"><input type="radio" name="q2" value="C"> C) Ambos derriten el escenario.</label>
+    </div>
+
+    <div class="question">
+      <div class="question-title">3. Yngwie vs. Joe Satriani – “El Duelo de los Extraterrestres”</div>
+      <div class="question-sub">¿Quién manda en la galaxia sonora?</div>
+      <label class="option"><input type="radio" name="q3" value="A"> A) Yngwie: densidad de notas extrema.</label>
+      <label class="option"><input type="radio" name="q3" value="B"> B) Satriani no es humano.</label>
+      <label class="option"><input type="radio" name="q3" value="C"> C) Llegan aliens a pedirles clases.</label>
+    </div>
+
+    <div class="question">
+      <div class="question-title">4. Yngwie vs. Dimebag Darrell – “Guisos de Armónicos Artificiales”</div>
+      <div class="question-sub">¿Quién gana?</div>
+      <label class="option"><input type="radio" name="q4" value="A"> A) Yngwie: rompe la sartén con un arpegio.</label>
+      <label class="option"><input type="radio" name="q4" value="B"> B) Dimebag rompe móviles con un squeal.</label>
+      <label class="option"><input type="radio" name="q4" value="C"> C) El técnico dimite.</label>
+    </div>
+
+    <div class="question">
+      <div class="question-title">5. Yngwie vs. Petrucci – “Laboratorio de BPM Prohibidos”</div>
+      <div class="question-sub">¿Quién controla la ciencia de la velocidad?</div>
+      <label class="option"><input type="radio" name="q5" value="A"> A) Yngwie: el metrónomo pide piedad.</label>
+      <label class="option"><input type="radio" name="q5" value="B"> B) Petrucci entrena en gravedad artificial.</label>
+      <label class="option"><input type="radio" name="q5" value="C"> C) Destruyen tres planetas.</label>
+    </div>
+
+    <div class="round-title">Ronda 2 – Modo Insano</div>
+
+    <div class="question">
+      <div class="question-title">6. Yngwie vs. Tony Iommi – “Riffs Oscuros”</div>
+      <div class="question-sub">¿Quién invoca más riffs desde el abismo?</div>
+      <label class="option"><input type="radio" name="q6" value="A"> A) Yngwie convierte el riff en solo barroco.</label>
+      <label class="option"><input type="radio" name="q6" value="B"> B) Iommi oscurece la habitación con una nota.</label>
+      <label class="option"><input type="radio" name="q6" value="C"> C) Se fusionan en un monstruo riffal.</label>
+    </div>
+
+    <div class="question">
+      <div class="question-title">7. Yngwie vs. Kirk Hammett – “Guerra de Wah”</div>
+      <div class="question-sub">¿Quién exprime más el pedal?</div>
+      <label class="option"><input type="radio" name="q7" value="A"> A) Yngwie: su ego modula más que un wah.</label>
+      <label class="option"><input type="radio" name="q7" value="B"> B) Kirk: el wah es un miembro más del grupo.</label>
+      <label class="option"><input type="radio" name="q7" value="C"> C) El wah explota y nace un género nuevo.</label>
+    </div>
+
+    <div class="question">
+      <div class="question-title">8. Yngwie vs. Randy Rhoads – “Clase Magistral”</div>
+      <div class="question-sub">¿Quién da la lección definitiva?</div>
+      <label class="option"><input type="radio" name="q8" value="A"> A) Yngwie da 3 siglos de teoría en 10 min.</label>
+      <label class="option"><input type="radio" name="q8" value="B"> B) Randy supera a tu profe del conservatorio.</label>
+      <label class="option"><input type="radio" name="q8" value="C"> C) Arde la pizarra.</label>
+    </div>
+
+    <div class="question">
+      <div class="question-title">9. Yngwie vs. Slash – “Sombrero vs Casaca”</div>
+      <div class="question-sub">¿Quién gana en presencia escénica?</div>
+      <label class="option"><input type="radio" name="q9" value="A"> A) Yngwie: su chaqueta tiene más notas que muchas canciones.</label>
+      <label class="option"><input type="radio" name="q9" value="B"> B) Slash gana sin esforzarse demasiado.</label>
+      <label class="option"><input type="radio" name="q9" value="C"> C) Foros discutiendo 3 horas.</label>
+    </div>
+
+    <div class="question">
+      <div class="question-title">10. Jam final de madrugada</div>
+      <div class="question-sub">¿Cómo termina la sesión?</div>
+      <label class="option"><input type="radio" name="q10" value="A"> A) Yngwie sigue solo hasta el amanecer.</label>
+      <label class="option"><input type="radio" name="q10" value="B"> B) Tu grupo crea un tema épico.</label>
+      <label class="option"><input type="radio" name="q10" value="C"> C) 47 vídeos en el móvil y cero recuerdos.</label>
+    </div>
+  `;
+
+  questionsBox.innerHTML = preguntasHTML;
+
+  // Sonido al marcar opciones
+  questionsBox.addEventListener("change", (e) => {
+    if (e.target.matches('input[type="radio"]')) {
+      playClick();
+    }
+  });
+
+  function calcular() {
+    let total = 0, A = 0, B = 0, C = 0;
+    for (let i = 1; i <= 10; i++) {
+      const sel = document.querySelector(`input[name="q${i}"]:checked`);
+      if (!sel) return null;
+      if (sel.value === "A") { total += 3; A++; }
+      if (sel.value === "B") { total += 2; B++; }
+      if (sel.value === "C") { total += 1; C++; }
+    }
+    return { total, A, B, C };
+  }
+
+  function rangoPara(total) {
+    if (total <= 10) return {
+      titulo: "Aprendiz del Riff",
+      texto: "Te falta rodaje, pero la actitud metalera ya está cargando.",
+      emoji: "🎸"
+    };
+    if (total <= 18) return {
+      titulo: "Shredder Oficial",
+      texto: "Tus solos ya molestan a los vecinos y eso es buena señal.",
+      emoji: "⚡"
+    };
+    if (total <= 25) return {
+      titulo: "Destructor de Metrónomos",
+      texto: "Piensas en BPM incluso al subir las escaleras.",
+      emoji: "🔥"
+    };
+    return {
+      titulo: "Maestro del Caos Neoclásico",
+      texto: "Los amplis te respetan, las púas te temen y el ego está en 11.",
+      emoji: "🏆"
+    };
+  }
+
+  function lanzarConfeti() {
+    medalCard.querySelectorAll(".confetti-piece").forEach(el => el.remove());
+    const colores = ["#ff2e63","#ff9f1c","#00f5d4","#f15bb5","#fee440"];
+    for (let i = 0; i < 35; i++) {
+      const piece = document.createElement("div");
+      piece.className = "confetti-piece";
+      piece.style.left = Math.random() * 100 + "%";
+      piece.style.background = colores[Math.floor(Math.random()*colores.length)];
+      piece.style.animationDelay = (Math.random()*0.4) + "s";
+      medalCard.appendChild(piece);
+    }
+  }
+
+  btnCalcular.addEventListener("click", () => {
+    playClick();
+    const r = calcular();
+    if (!r) {
+      alert("Responde todas las preguntas antes de ver el resultado.");
+      return;
+    }
+    const rango = rangoPara(r.total);
+    resultBox.classList.remove("hidden");
+    resultBox.innerHTML =
+      `<strong>${rango.titulo}</strong><br>` +
+      `Puntos: ${r.total}/30<br>` +
+      `<small>A=${r.A}, B=${r.B}, C=${r.C}</small>`;
+
+    // Pantalla de medalla
+    medalEmoji.textContent = rango.emoji;
+    medalTitle.textContent = rango.titulo;
+    medalText.textContent = rango.texto;
+    medalOverlay.classList.remove("hidden");
+    lanzarConfeti();
+  });
+
+  btnCloseMedal.addEventListener("click", () => {
+    playClick();
+    medalOverlay.classList.add("hidden");
+  });
+
+  btnReset.addEventListener("click", () => {
+    playClick();
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    resultBox.classList.add("hidden");
+  });
+
+  btnCopiar.addEventListener("click", async () => {
+    playClick();
+    const r = calcular();
+    if (!r) return;
+    const texto = `Mi puntuación en Batalla Guitar Hero: ${r.total}/30 🤘`;
+    try {
+      await navigator.clipboard.writeText(texto);
+      alert("Resultado copiado. Pega en el grupo y que empiece el pique.");
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  const ranking = [];
+  btnSave.addEventListener("click", () => {
+    playClick();
+    const r = calcular();
+    if (!r) return;
+    const nombre = (playerNameInp.value || "Jugador").trim();
+    ranking.push({ nombre, puntos: r.total });
+    ranking.sort((a, b) => b.puntos - a.puntos);
+    rankingList.innerHTML = ranking
+      .map(p => `<li>${p.nombre} – ${p.puntos} pts</li>`)
+      .join("");
+    rankingBox.classList.remove("hidden");
+  });
 </script>
 
 </body>
