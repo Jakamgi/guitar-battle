@@ -5,7 +5,6 @@
 <title>¿Cuánto Yngwie llevas dentro?</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<!-- Tipografía moderna -->
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
@@ -42,6 +41,7 @@
     padding: 24px 26px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.4);
     animation: fadeIn 0.4s ease-out;
+    position: relative;
   }
 
   @keyframes fadeIn {
@@ -55,6 +55,17 @@
     margin-top: 0;
     margin-bottom: 10px;
     letter-spacing: 0.5px;
+  }
+
+  /* LOGO del juego */
+  .logo-title {
+    font-size: 1.9rem;
+    margin-bottom: 12px;
+    background: linear-gradient(120deg, #ffcc70, #ff7b8a, #ffffff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 10px rgba(255,123,138,0.4);
   }
 
   .subtitle {
@@ -106,7 +117,27 @@
     color: var(--accent-soft);
   }
 
-  .hidden { display:none; }
+  .top-bar {
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    margin-bottom:10px;
+    gap:10px;
+  }
+
+  .sound-toggle {
+    font-size:0.8rem;
+    color:var(--text-soft);
+    cursor:pointer;
+    user-select:none;
+  }
+
+  .sound-toggle span {
+    font-weight:600;
+    color:var(--accent-soft);
+  }
+
+  .hidden { display:none !important; }
 
   .question-block {
     background: var(--panel2);
@@ -116,16 +147,28 @@
     margin-bottom: 16px;
   }
 
-  .q-title { font-weight: 600; margin-bottom: 4px; }
-  .q-sub   { font-size: 0.85rem; color: var(--text-soft); margin-bottom: 8px; }
+  .q-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-size: 1rem;
+  }
+
+  .q-scene {
+    margin-bottom: 10px;
+    color: var(--text-soft);
+    font-size: 0.92rem;
+    line-height: 1.3;
+  }
 
   .option { 
-    margin: 5px 0;
+    margin: 6px 0;
     display:flex;
     align-items:flex-start;
     gap:8px;
     cursor:pointer;
   }
+
+  .option input { margin-top:3px; cursor:pointer; }
 
   .result-box {
     background: var(--panel2);
@@ -138,7 +181,7 @@
   .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.75);
+    background: rgba(0,0,0,0.78);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -156,6 +199,8 @@
     color: var(--text);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     animation: fadeIn 0.3s ease-out;
+    position: relative;
+    overflow: hidden;
   }
 
   .big-emoji {
@@ -178,40 +223,83 @@
     margin-top: 14px;
   }
 
+  /* 🔥 Animación de fuego para el modo Yngwie Absoluto */
+  .fire-mode {
+    border-color: rgba(255,120,70,0.9);
+    box-shadow:
+      0 0 20px rgba(255,100,40,0.6),
+      0 0 40px rgba(255,60,0,0.4);
+    background: radial-gradient(circle at top, #3b1b1b, #120808);
+    animation: fire-pulse 1.2s ease-in-out infinite alternate;
+  }
+
+  .fire-mode::before,
+  .fire-mode::after {
+    content: "";
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140%;
+    height: 80px;
+    background: radial-gradient(circle at center,
+      rgba(255,150,70,0.75),
+      rgba(255,80,0,0.35),
+      transparent 70%);
+    filter: blur(8px);
+    opacity: 0.75;
+    pointer-events:none;
+    animation: fire-flicker 0.18s infinite alternate;
+  }
+
+  .fire-mode::after {
+    bottom: -60px;
+    opacity: 0.4;
+    filter: blur(14px);
+  }
+
+  @keyframes fire-pulse {
+    from { box-shadow: 0 0 16px rgba(255,90,40,0.5), 0 0 28px rgba(255,40,0,0.3); }
+    to   { box-shadow: 0 0 28px rgba(255,130,60,0.9), 0 0 52px rgba(255,80,0,0.6); }
+  }
+
+  @keyframes fire-flicker {
+    from { transform: translateX(-50%) scaleY(1); opacity: 0.7; }
+    to   { transform: translateX(-50%) scaleY(1.1); opacity: 0.9; }
+  }
 </style>
 </head>
 
 <body>
 <div class="container">
 
-  <!-- 🟥 PANTALLA DE INICIO -->
+  <!-- INICIO -->
   <div class="card" id="startScreen">
-
-    <img src="yngwie.jpg" class="hero">
-
-    <h1>¿Cuánto Yngwie llevas dentro?</h1>
-    <p class="subtitle">
-      El test definitivo para fans del neoclásico, el ego virtuoso y los
-      solos que duran más que algunas películas.
-    </p>
+    <img src="yngwie.jpg" class="hero" alt="Yngwie">
+    <h1 class="logo-title">¿Cuánto Yngwie llevas dentro?</h1>
+    <p class="subtitle">Test para fans de Yngwie y del universo guitarrístico.</p>
 
     <button class="btn-primary" id="btnStart">Empezar test</button>
     <button class="btn-outline" id="btnShowRules">¿Cómo funciona?</button>
 
     <div id="rules" class="result-box hidden">
-      10 preguntas.  
-      A = ultra Yngwie  
-      B = friki guitarrero razonable  
-      C = caos / humor  
-      <br><br>
-      Ganas un título según tu “afinidad”.
+      El juego elige 10 preguntas aleatorias del pool.  
+      A = ultra Yngwie · B = guitarrista equilibrado · C = caos/meme.  
+      Resultado según qué hayas elegido más.
     </div>
   </div>
 
-  <!-- 🟦 PANTALLA DEL TEST -->
+  <!-- TEST -->
   <div class="card hidden" id="gameScreen">
-    <h1>Test Yngwie</h1>
-    <p class="subtitle">Marca lo que te salga del alma (o del mástil).</p>
+
+    <div class="top-bar">
+      <h1 style="margin:0;">Test Yngwie</h1>
+      <div id="soundToggle" class="sound-toggle">
+        🔈 Sonido: <span>OFF</span>
+      </div>
+    </div>
+
+    <p class="subtitle">Responde como eres de verdad, sin postureos.</p>
 
     <div id="questions"></div>
 
@@ -230,9 +318,9 @@
     </div>
   </div>
 
-  <!-- 🟩 OVERLAY FINAL -->
+  <!-- OVERLAY RESULTADO -->
   <div class="overlay hidden" id="overlay">
-    <div class="overlay-card">
+    <div class="overlay-card" id="overlayCard">
       <div id="overlayEmoji" class="big-emoji">🎸</div>
       <h2 id="overlayTitle"></h2>
       <p id="overlayText"></p>
@@ -246,7 +334,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  // Elementos
+  // ELEMENTOS
   const startScreen = document.getElementById("startScreen");
   const gameScreen  = document.getElementById("gameScreen");
   const btnStart    = document.getElementById("btnStart");
@@ -259,20 +347,48 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnBack     = document.getElementById("btnBack");
   const resultBox   = document.getElementById("resultBox");
 
-  const btnCopy     = document.getElementById("btnCopy");
   const playerName  = document.getElementById("playerName");
   const btnSave     = document.getElementById("btnSave");
   const rankingBox  = document.getElementById("ranking");
   const rankingList = document.getElementById("rankingList");
 
-  const overlay     = document.getElementById("overlay");
-  const overlayEmoji= document.getElementById("overlayEmoji");
-  const overlayTitle= document.getElementById("overlayTitle");
-  const overlayText = document.getElementById("overlayText");
-  const overlayExtra= document.getElementById("overlayExtra");
+  const overlay      = document.getElementById("overlay");
+  const overlayCard  = document.getElementById("overlayCard");
+  const overlayEmoji = document.getElementById("overlayEmoji");
+  const overlayTitle = document.getElementById("overlayTitle");
+  const overlayText  = document.getElementById("overlayText");
+  const overlayExtra = document.getElementById("overlayExtra");
   const btnCloseOverlay = document.getElementById("btnCloseOverlay");
 
-  // Navegación
+  const soundToggle  = document.getElementById("soundToggle");
+
+  // SONIDO OPCIONAL
+  let soundEnabled = false;
+  let audioCtx = null;
+
+  function beep(freq = 880, duration = 0.07) {
+    if (!soundEnabled) return;
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "square";
+      osc.frequency.value = freq;
+      gain.gain.value = 0.12;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch(e) {}
+  }
+
+  soundToggle.onclick = () => {
+    soundEnabled = !soundEnabled;
+    soundToggle.querySelector("span").textContent = soundEnabled ? "ON" : "OFF";
+    if (soundEnabled) beep(1200, 0.1);
+  };
+
+  // NAVEGACIÓN
   btnStart.onclick = () => {
     startScreen.classList.add("hidden");
     gameScreen.classList.remove("hidden");
@@ -290,76 +406,188 @@ document.addEventListener("DOMContentLoaded", () => {
     resultBox.classList.add("hidden");
   };
 
-  // Preguntas HTML
-  const preguntas = [
-    ["El altar", "Tu habitación ideal tiene...",
-      "Una Strato crema escalopada con luz dorada",
-      "Varias guitarras y pedalboard serio",
-      "Pack del súper + póster mal impreso"
-    ],
-    ["Ensayo con amigos", "Te dan un solo de 8 compases...",
-      "Haces un solo épico de 3 minutos",
-      "Haces un solo guapo y controlado",
-      "Te equivocas pero la actitud lo salva"
-    ],
-    ["El metrónomo", "Tu relación con él...",
-      "Es mi enemigo jurado",
-      "Amor/odio profesional",
-      "¿Qué metrónomo?"
-    ],
-    ["La cita perfecta", "Plan ideal:",
-      "Concierto Yngwie + DVD Yngwie + charla Yngwie",
-      "Concierto rock y charla musical",
-      "Nada con solos de más de 10s"
-    ],
-    ["Capricho guitarrero", "Tienes pasta para un capricho:",
-      "Strato crema + ampli brutal",
-      "Guitarra versátil decente",
-      "Viaje, fiesta y lo que surja"
-    ],
-    ["Ego en el escenario", "Alguien grita “¡BAJA EL VOLUMEN!”",
-      "Subo más: el solo manda",
-      "Me controlo y toco musical",
-      "Solo experimental ruidoso"
-    ],
-    ["Clases de guitarra", "A un principiante le enseñas...",
-      "Armónica menor a 200 BPM",
-      "Acordes y teoría básica",
-      "Caras épicas mientras tocas"
-    ],
-    ["Frase favorita", "La que más te representa...",
-      "More is more",
-      "Si sirve a la canción, vale",
-      "Si me río, vale"
-    ],
-    ["Redes sociales", "Qué compartes más...",
-      "Solos imposibles",
-      "Música + memes y vida normal",
-      "Fails y memes absurdos"
-    ],
-    ["Final de fiesta", "Son las 4 AM, aparece una guitarra...",
-      "Arpegios hasta el amanecer",
-      "Canciones conocidas y algún solo",
-      "Tres acordes y gritar"
-    ]
+  // POOL DE PREGUNTAS
+  const questionPool = [
+
+    {
+      titulo: "Merch oficial de Yngwie",
+      escena: "Estás en una tienda y ves camisetas de Yngwie en una estantería iluminada como si fuera un altar.",
+      A: "Compras dos: una para usar y otra para guardar.",
+      B: "Te pillas una si está realmente guapa.",
+      C: "Te haces tu propio meme en una camiseta blanca."
+    },
+
+    {
+      titulo: "El altar del guitarrista",
+      escena: "Te mudas y puedes diseñar tu habitación ideal.",
+      A: "Strato crema escalopada en pedestal con luz divina.",
+      B: "Varias guitarras bien cuidadas y pedalboard serio.",
+      C: "Una guitarra del súper y pósters torcidos."
+    },
+
+    {
+      titulo: "Ensayo con colegas",
+      escena: "Te dan un hueco de 8 compases para un solo.",
+      A: "Haces un solo de 3 minutos con modulación dramática.",
+      B: "Te marcas un solo guapo y vuelves al riff.",
+      C: "Te lías, haces ruidos, pero todos se ríen."
+    },
+
+    {
+      titulo: "El metrónomo traicionero",
+      escena: "Alguien te pregunta si practicas con metrónomo.",
+      A: "Es mi archienemigo. Si no explota, mal día.",
+      B: "Herramienta útil con amor/odio.",
+      C: "¿Metró qué? Yo pongo bases en YouTube."
+    },
+
+    {
+      titulo: "La cita perfecta",
+      escena: "Estás planeando una cita ideal.",
+      A: "Concierto de Yngwie + DVD Yngwie + análisis de solos.",
+      B: "Concierto rock y charla musical.",
+      C: "Cualquier cosa sin solos eternos."
+    },
+
+    {
+      titulo: "Capricho guitarrero",
+      escena: "Llevas meses ahorrando para un capricho musical.",
+      A: "Strato crema + ampli que ruge como dragón.",
+      B: "Una guitarra versátil de calidad.",
+      C: "Un viaje, fiesta y lo que venga."
+    },
+
+    {
+      titulo: "Ego en el escenario",
+      escena: "Estás tocando y alguien del público grita ‘¡BAJA EL VOLUMEN!’.",
+      A: "Subo un punto más. El solo manda.",
+      B: "Me controlo y hago algo musical.",
+      C: "Respondo con un solo ruidista experimental."
+    },
+
+    {
+      titulo: "Clases de guitarra",
+      escena: "Das tu primera clase a un principiante.",
+      A: "Escala armónica menor a 200 BPM desde minuto uno.",
+      B: "Acordes básicos y ritmo.",
+      C: "Poses y caras de directo."
+    },
+
+    {
+      titulo: "Tu frase favorita",
+      escena: "Te preguntan tu filosofía guitarrera.",
+      A: "“More is more”.",
+      B: "“Si sirve a la canción, vale”.",
+      C: "“Si me río, vale”."
+    },
+
+    {
+      titulo: "Redes sociales",
+      escena: "Abres tu Instagram musical.",
+      A: "Solos imposibles y licks neoclásicos.",
+      B: "Música, conciertos y vida normal.",
+      C: "Fails y memes surrealistas."
+    },
+
+    {
+      titulo: "Final de fiesta",
+      escena: "Son las 4 AM y alguien saca una guitarra.",
+      A: "Arpegios hasta que salga el sol.",
+      B: "Clásicos que todos cantan y algún solo.",
+      C: "Tres acordes y gritar sin pensar."
+    },
+
+    {
+      titulo: "Ataque de GAS",
+      escena: "Ves una Strato crema edición limitada.",
+      A: "Encuentras financiación creativa en 5 min.",
+      B: "Comparas reviews y piensas.",
+      C: "Cierras la pestaña y te vas a cenar."
+    },
+
+    {
+      titulo: "Colección ideal",
+      escena: "Miras tu estantería de música soñada.",
+      A: "Discografía de Yngwie completa.",
+      B: "Mezcla de guitarristas variados.",
+      C: "Playlists básicas y ya."
+    },
+
+    {
+      titulo: "Ensayo en local pequeño",
+      escena: "El sonido está demasiado apretado.",
+      A: "Solución: más volumen.",
+      B: "Solución: ajustar EQ y dinámica.",
+      C: "Solución: enviar memes al grupo."
+    },
+
+    {
+      titulo: "Vecinos sensibles",
+      escena: "Se quejan del volumen.",
+      A: "Ensayo con más distorsión.",
+      B: "Buscar horarios razonables.",
+      C: "Cambiar afinación solo para molestar."
+    },
+
+    {
+      titulo: "Backstage imaginario",
+      escena: "Te ofrecen conocer a tu guitarrista favorito.",
+      A: "Llevas tu púa para que la bendiga.",
+      B: "Charlas de música tranquilo.",
+      C: "Te haces una foto absurda y ya."
+    },
+
+    {
+      titulo: "Merch casero",
+      escena: "Ves camisetas oficiales carísimas.",
+      A: "Compro dos por si desaparecen.",
+      B: "Una si realmente mola.",
+      C: "Me hago mi propia camiseta meme."
+    },
+
+    {
+      titulo: "Nombre del WiFi",
+      escena: "Renombras tu router.",
+      A: "MORE-IS-MORE-5G",
+      B: "Algo con guitarras.",
+      C: "WIFI-DE-LA-VECINA"
+    }
   ];
 
-  // Insertar preguntas
-  questionsBox.innerHTML = preguntas.map((q, i) => `
-    <div class="question-block">
-      <div class="q-title">${i+1}. ${q[0]}</div>
-      <div class="q-sub">${q[1]}</div>
-      <label class="option"><input type="radio" name="q${i}" value="A"> A) ${q[2]}</label>
-      <label class="option"><input type="radio" name="q${i}" value="B"> B) ${q[3]}</label>
-      <label class="option"><input type="radio" name="q${i}" value="C"> C) ${q[4]}</label>
-    </div>
-  `).join("");
+  // Selección de 10 preguntas aleatorias
+  function renderPreguntas() {
+    const seleccion = [...questionPool]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 10);
+
+    questionsBox.innerHTML = seleccion.map((q, i) => `
+      <div class="question-block">
+        <div class="q-title">Pregunta ${i+1} — ${q.titulo}</div>
+        <div class="q-scene"><strong>Situación:</strong> ${q.escena}</div>
+
+        <label class="option"><input type="radio" name="q${i}" value="A"> A) ${q.A}</label>
+        <label class="option"><input type="radio" name="q${i}" value="B"> B) ${q.B}</label>
+        <label class="option"><input type="radio" name="q${i}" value="C"> C) ${q.C}</label>
+      </div>
+    `).join("");
+  }
+
+  renderPreguntas();
+
+  // Reiniciar test
+  btnReset.onclick = () => {
+    document.querySelectorAll("input[type=radio]").forEach(e => e.checked = false);
+    resultBox.classList.add("hidden");
+    overlay.classList.add("hidden");
+    renderPreguntas();
+  };
 
   // Contar respuestas
   function contar() {
     let A=0,B=0,C=0;
-    for(let i=0;i<preguntas.length;i++){
-      const sel=document.querySelector(`input[name="q${i}"]:checked`);
+    const blocks = questionsBox.querySelectorAll(".question-block");
+    for(let i=0;i<blocks.length;i++){
+      const sel = blocks[i].querySelector("input[type=radio]:checked");
       if(!sel) return null;
       if(sel.value==="A") A++;
       if(sel.value==="B") B++;
@@ -368,60 +596,103 @@ document.addEventListener("DOMContentLoaded", () => {
     return {A,B,C};
   }
 
-  // Determinar estilo
-  function calcularEstilo({A,B,C}) {
-    if(A>B && A>C) return ["🔥 SUMO SACERDOTE DE YNGWIE",
-      "Sabes más de Yngwie que de tus propios familiares. Reconoces un sweep suyo con la tele apagada.",
-      "🔥"];
+  // Estilo final
+  function calcularEstilo(res) {
+    const {A,B,C} = res;
 
-    if(B>A && B>C) return ["⚡ SHREDDER ILUSTRADO",
-      "Amas a Yngwie pero aprecias a todo guitarrista top. Puedes discutir horas sobre calibres de cuerdas.",
-      "⚡"];
+    if (A > 0 && B === 0 && C === 0) {
+      return {
+        titulo: "🔥 MODO YNGWIE ABSOLUTO 🔥",
+        texto: "Has contestado TODO en modo Yngwie. La púa tiembla, el metrónomo sufre y el universo del shred te saluda.",
+        emoji: "🔥",
+        secreto: true
+      };
+    }
 
-    if(C>A && C>B) return ["💀 AGENTE DEL CAOS NEUTRAL",
-      "Has venido por los memes, las risas y el caos sonoro. El mundo te necesita.",
-      "💀"];
+    if (A > B && A > C) {
+      return {
+        titulo: "SUMO SACERDOTE DE YNGWIE",
+        texto: "Sabes más de Yngwie que la mayoría de tu familia. Reconoces un sweep suyo a kilómetros.",
+        emoji: "🔥"
+      };
+    }
 
-    return ["🎸 FAN SANO CON HUMOR",
-      "Te encanta la música, los guitarristas y las risas. Un equilibrio perfecto.",
-      "🎸"];
+    if (B > A && B > C) {
+      return {
+        titulo: "SHREDDER ILUSTRADO",
+        texto: "Amas a Yngwie, pero compartes el altar con otros dioses del mástil.",
+        emoji: "⚡"
+      };
+    }
+
+    if (C > A && C > B) {
+      return {
+        titulo: "AGENTE DEL CAOS NEUTRAL",
+        texto: "Te alimentas de memes, fails y situaciones surrealistas.",
+        emoji: "💀"
+      };
+    }
+
+    return {
+      titulo: "FAN SANO CON HUMOR",
+      texto: "Te encanta la música, las risas y un nivel justo de shred.",
+      emoji: "🎸"
+    };
   }
 
   // Mostrar resultado
   btnResult.onclick = () => {
-    const res=contar();
-    if(!res){ alert("Responde todas las preguntas."); return; }
+    const res = contar();
+    if (!res) {
+      alert("Responde las 10 preguntas.");
+      return;
+    }
 
-    const [titulo,texto,emoji] = calcularEstilo(res);
+    const estilo = calcularEstilo(res);
 
     resultBox.classList.remove("hidden");
     resultBox.innerHTML =
-      `<strong>${titulo}</strong><br>
-       A=${res.A}, B=${res.B}, C=${res.C}`;
+      `<strong>${estilo.titulo}</strong><br>` +
+      `A=${res.A}, B=${res.B}, C=${res.C}`;
 
-    // Overlay bonito
-    overlayEmoji.textContent = emoji;
-    overlayTitle.textContent = titulo;
-    overlayText.textContent  = texto;
+    overlayEmoji.textContent = estilo.emoji;
+    overlayTitle.textContent = estilo.titulo;
+    overlayText.textContent  = estilo.texto;
     overlayExtra.textContent = `A=${res.A}, B=${res.B}, C=${res.C}`;
     overlay.classList.remove("hidden");
+
+    // fuego suave solo en modo secreto
+    overlayCard.classList.toggle("fire-mode", !!estilo.secreto);
+
+    if (estilo.secreto) {
+      beep(1400, 0.15);
+      setTimeout(() => beep(1800, 0.15), 180);
+      setTimeout(() => beep(2200, 0.15), 360);
+    } else {
+      beep();
+    }
   };
 
-  btnCloseOverlay.onclick = () => overlay.classList.add("hidden");
-  btnReset.onclick        = () => {
-    document.querySelectorAll("input[type=radio]").forEach(e=>e.checked=false);
-    resultBox.classList.add("hidden");
+  btnCloseOverlay.onclick = () => {
+    overlay.classList.add("hidden");
+    overlayCard.classList.remove("fire-mode");
   };
 
   // Ranking
   const ranking=[];
   btnSave.onclick = () => {
-    const res=contar();
-    if(!res) return;
-    const [titulo]=calcularEstilo(res);
-    const name=playerName.value||"Jugador";
-    ranking.push({nombre:name,estilo:titulo});
-    rankingList.innerHTML = ranking.map(r=>`<li>${r.nombre} – ${r.estilo}</li>`).join("");
+    const res = contar();
+    if (!res) return;
+
+    const estilo = calcularEstilo(res);
+    const nombre = (playerName.value || "Jugador").trim();
+
+    ranking.push({nombre, estilo: estilo.titulo});
+
+    rankingList.innerHTML = ranking
+      .map(r => `<li>${r.nombre} – ${r.estilo}</li>`)
+      .join("");
+
     rankingBox.classList.remove("hidden");
   };
 
