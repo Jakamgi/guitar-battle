@@ -68,3 +68,574 @@
   img.hero {
     display:block;
     margin: 0 auto 18px auto;
+    max-width: 260px;
+    width: 90%;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(230,57,70,0.35);
+  }
+
+  button {
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-soft);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--accent-soft);
+    color: var(--accent-soft);
+  }
+
+  .top-bar {
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    margin-bottom:10px;
+    gap:10px;
+  }
+
+  .sound-toggle {
+    font-size:0.8rem;
+    color:var(--text-soft);
+    cursor:pointer;
+    user-select:none;
+  }
+
+  .sound-toggle span {
+    font-weight:600;
+    color:var(--accent-soft);
+  }
+
+  .hidden { display:none !important; }
+
+  .question-block {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+
+  .q-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-size: 1rem;
+  }
+
+  .q-scene {
+    margin-bottom: 10px;
+    color: var(--text-soft);
+    font-size: 0.92rem;
+    line-height: 1.3;
+  }
+
+  .option { 
+    margin: 6px 0;
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    cursor:pointer;
+  }
+
+  .option input { margin-top:3px; cursor:pointer; }
+
+  .result-box {
+    background: var(--panel2);
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.78);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index: 20;
+  }
+
+  .overlay-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 26px;
+    border-radius: 16px;
+    max-width: 380px;
+    width: 88%;
+    text-align: center;
+    color: var(--text);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .big-emoji {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--panel2);
+    color: var(--text);
+  }
+
+  ol {
+    padding-left: 20px;
+    margin-top: 14px;
+  }
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <!-- INICIO -->
+  <div class="card" id="startScreen">
+    <img src="yngwie.jpg" class="hero" alt="Yngwie">
+    <h1>¿Cuánto Yngwie llevas dentro?</h1>
+    <p class="subtitle">Test para fans de Yngwie y del universo guitarrístico.</p>
+
+    <button class="btn-primary" id="btnStart">Empezar test</button>
+    <button class="btn-outline" id="btnShowRules">¿Cómo funciona?</button>
+
+    <div id="rules" class="result-box hidden">
+      El juego elige 10 preguntas aleatorias del pool.  
+      A = ultra Yngwie · B = guitarrista equilibrado · C = caos/meme.  
+      Resultado según qué hayas elegido más.
+    </div>
+  </div>
+
+  <!-- TEST -->
+  <div class="card hidden" id="gameScreen">
+
+    <div class="top-bar">
+      <h1 style="margin:0;">Test Yngwie</h1>
+      <div id="soundToggle" class="sound-toggle">
+        🔈 Sonido: <span>OFF</span>
+      </div>
+    </div>
+
+    <p class="subtitle">Responde como eres de verdad, sin postureos.</p>
+
+    <div id="questions"></div>
+
+    <button class="btn-primary" id="btnResult">Ver mi resultado 🤘</button>
+    <button class="btn-outline" id="btnReset">Reiniciar</button>
+    <button class="btn-outline" id="btnBack">Volver al inicio</button>
+
+    <div class="result-box hidden" id="resultBox"></div>
+
+    <input type="text" id="playerName" placeholder="Tu nombre para el ranking">
+    <button class="btn-primary" id="btnSave">Guardar en ranking 🏆</button>
+
+    <div class="result-box hidden" id="ranking">
+      <strong>Ranking de la noche</strong>
+      <ol id="rankingList"></ol>
+    </div>
+  </div>
+
+  <!-- OVERLAY RESULTADO -->
+  <div class="overlay hidden" id="overlay">
+    <div class="overlay-card" id="overlayCard">
+      <div id="overlayEmoji" class="big-emoji">🎸</div>
+      <h2 id="overlayTitle"></h2>
+      <p id="overlayText"></p>
+      <p id="overlayExtra"></p>
+      <button class="btn-primary" id="btnCloseOverlay">Cerrar</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  // ELEMENTOS
+  const startScreen = document.getElementById("startScreen");
+  const gameScreen  = document.getElementById("gameScreen");
+  const btnStart    = document.getElementById("btnStart");
+  const btnShowRules= document.getElementById("btnShowRules");
+  const rules       = document.getElementById("rules");
+
+  const questionsBox= document.getElementById("questions");
+  const btnResult   = document.getElementById("btnResult");
+  const btnReset    = document.getElementById("btnReset");
+  const btnBack     = document.getElementById("btnBack");
+  const resultBox   = document.getElementById("resultBox");
+
+  const playerName  = document.getElementById("playerName");
+  const btnSave     = document.getElementById("btnSave");
+  const rankingBox  = document.getElementById("ranking");
+  const rankingList = document.getElementById("rankingList");
+
+  const overlay      = document.getElementById("overlay");
+  const overlayEmoji = document.getElementById("overlayEmoji");
+  const overlayTitle = document.getElementById("overlayTitle");
+  const overlayText  = document.getElementById("overlayText");
+  const overlayExtra = document.getElementById("overlayExtra");
+  const btnCloseOverlay = document.getElementById("btnCloseOverlay");
+
+  const soundToggle  = document.getElementById("soundToggle");
+
+  // 🌟 SONIDO OPCIONAL (modo C)
+  let soundEnabled = false;
+  let audioCtx = null;
+
+  function beep(freq = 880, duration = 0.07) {
+    if (!soundEnabled) return;
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "square";
+      osc.frequency.value = freq;
+      gain.gain.value = 0.12;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch(e) {}
+  }
+
+  soundToggle.onclick = () => {
+    soundEnabled = !soundEnabled;
+    soundToggle.querySelector("span").textContent = soundEnabled ? "ON" : "OFF";
+    if (soundEnabled) beep(1200, 0.1);
+  };
+
+  // NAVEGACIÓN
+  btnStart.onclick = () => {
+    startScreen.classList.add("hidden");
+    gameScreen.classList.remove("hidden");
+    window.scrollTo({ top: 0 });
+  };
+
+  btnShowRules.onclick = () => {
+    rules.classList.toggle("hidden");
+  };
+
+  btnBack.onclick = () => {
+    gameScreen.classList.add("hidden");
+    startScreen.classList.remove("hidden");
+    overlay.classList.add("hidden");
+    resultBox.classList.add("hidden");
+  };
+
+  // 🟣 POOL DE 18 PREGUNTAS (formato narrativo mejorado)
+  const questionPool = [
+
+    {
+      titulo: "Merch oficial de Yngwie",
+      escena: "Estás en una tienda y ves camisetas de Yngwie en una estantería iluminada como si fuera un altar.",
+      A: "Compras dos: una para usar y otra para guardar.",
+      B: "Te pillas una si está realmente guapa.",
+      C: "Te haces tu propio meme en una camiseta blanca."
+    },
+
+    {
+      titulo: "El altar del guitarrista",
+      escena: "Te mudas y puedes diseñar tu habitación ideal.",
+      A: "Strato crema escalopada en pedestal con luz divina.",
+      B: "Varias guitarras bien cuidadas y pedalboard serio.",
+      C: "Una guitarra del súper y pósters torcidos."
+    },
+
+    {
+      titulo: "Ensayo con colegas",
+      escena: "Te dan un hueco de 8 compases para un solo.",
+      A: "Haces un solo de 3 minutos con modulación dramática.",
+      B: "Te marcas un solo guapo y vuelves al riff.",
+      C: "Te lías, haces ruidos, pero todos se ríen."
+    },
+
+    {
+      titulo: "El metrónomo traicionero",
+      escena: "Alguien te pregunta si practicas con metrónomo.",
+      A: "Es mi archienemigo. Si no explota, mal día.",
+      B: "Herramienta útil con amor/odio.",
+      C: "¿Metró qué? Yo pongo bases en YouTube."
+    },
+
+    {
+      titulo: "La cita perfecta",
+      escena: "Estás planeando una cita ideal.",
+      A: "Concierto de Yngwie + DVD Yngwie + análisis de solos.",
+      B: "Concierto rock y charla musical.",
+      C: "Cualquier cosa sin solos eternos."
+    },
+
+    {
+      titulo: "Capricho guitarrero",
+      escena: "Llevas meses ahorrando para un capricho musical.",
+      A: "Strato crema + ampli que ruge como dragón.",
+      B: "Una guitarra versátil de calidad.",
+      C: "Un viaje, fiesta y lo que venga."
+    },
+
+    {
+      titulo: "Ego en el escenario",
+      escena: "Estás tocando y alguien del público grita ‘¡BAJA EL VOLUMEN!’.",
+      A: "Subo un punto más. El solo manda.",
+      B: "Me controlo y hago algo musical.",
+      C: "Respondo con un solo ruidista experimental."
+    },
+
+    {
+      titulo: "Clases de guitarra",
+      escena: "Das tu primera clase a un principiante.",
+      A: "Escala armónica menor a 200 BPM desde minuto uno.",
+      B: "Acordes básicos y ritmo.",
+      C: "Poses y caras de directo."
+    },
+
+    {
+      titulo: "Tu frase favorita",
+      escena: "Te preguntan tu filosofía guitarrera.",
+      A: "“More is more”.",
+      B: "“Si sirve a la canción, vale”.",
+      C: "“Si me río, vale”."
+    },
+
+    {
+      titulo: "Redes sociales",
+      escena: "Abres tu Instagram musical.",
+      A: "Solos imposibles y licks neoclásicos.",
+      B: "Música, conciertos y vida normal.",
+      C: "Fails y memes surrealistas."
+    },
+
+    {
+      titulo: "Final de fiesta",
+      escena: "Son las 4 AM y alguien saca una guitarra.",
+      A: "Arpegios hasta que salga el sol.",
+      B: "Clásicos que todos cantan y algún solo.",
+      C: "Tres acordes y gritar sin pensar."
+    },
+
+    {
+      titulo: "Ataque de GAS",
+      escena: "Ves una Strato crema edición limitada.",
+      A: "Ideas financiación creativa en 5 min.",
+      B: "Comparas reviews y piensas.",
+      C: "Cierras la pestaña y te vas a cenar."
+    },
+
+    {
+      titulo: "Colección ideal",
+      escena: "Miras tu estantería de música soñada.",
+      A: "Discografía de Yngwie completa.",
+      B: "Mezcla de guitarristas variados.",
+      C: "Playlists básicas y ya."
+    },
+
+    {
+      titulo: "Ensayo en local pequeño",
+      escena: "El sonido está demasiado apretado.",
+      A: "Solución: más volumen.",
+      B: "Solución: ajustar EQ y dinámica.",
+      C: "Solución: enviar memes al grupo."
+    },
+
+    {
+      titulo: "Vecinos sensibles",
+      escena: "Se quejan del volumen.",
+      A: "Ensayo con más distorsión.",
+      B: "Buscar horarios razonables.",
+      C: "Cambiar afinación solo para molestar."
+    },
+
+    {
+      titulo: "Backstage imaginario",
+      escena: "Te ofrecen conocer a tu guitarrista favorito.",
+      A: "Llevas tu púa para que la bendiga.",
+      B: "Charlas de música tranquilo.",
+      C: "Te haces una foto absurda y ya."
+    },
+
+    {
+      titulo: "Merch casero",
+      escena: "Ves camisetas oficiales carísimas.",
+      A: "Compro dos por si desaparecen.",
+      B: "Una si realmente mola.",
+      C: "Me hago mi propia camiseta meme."
+    },
+
+    {
+      titulo: "Nombre del WiFi",
+      escena: "Renombras tu router.",
+      A: "MORE-IS-MORE-5G",
+      B: "Algo con guitarras.",
+      C: "WIFI-DE-LA-VECINA"
+    }
+  ];
+
+  // Selección de 10 preguntas aleatorias
+  function renderPreguntas() {
+    const seleccion = [...questionPool]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 10);
+
+    questionsBox.innerHTML = seleccion.map((q, i) => `
+      <div class="question-block">
+        <div class="q-title">Pregunta ${i+1} — ${q.titulo}</div>
+        <div class="q-scene"><strong>Situación:</strong> ${q.escena}</div>
+
+        <label class="option"><input type="radio" name="q${i}" value="A"> A) ${q.A}</label>
+        <label class="option"><input type="radio" name="q${i}" value="B"> B) ${q.B}</label>
+        <label class="option"><input type="radio" name="q${i}" value="C"> C) ${q.C}</label>
+      </div>
+    `).join("");
+  }
+
+  renderPreguntas();
+
+  // Reiniciar test
+  btnReset.onclick = () => {
+    document.querySelectorAll("input[type=radio]").forEach(e => e.checked = false);
+    resultBox.classList.add("hidden");
+    overlay.classList.add("hidden");
+    renderPreguntas();
+  };
+
+  // Contar respuestas
+  function contar() {
+    let A=0,B=0,C=0;
+    const blocks = questionsBox.querySelectorAll(".question-block");
+    for(let i=0;i<blocks.length;i++){
+      const sel = blocks[i].querySelector("input[type=radio]:checked");
+      if(!sel) return null;
+      if(sel.value==="A") A++;
+      if(sel.value==="B") B++;
+      if(sel.value==="C") C++;
+    }
+    return {A,B,C};
+  }
+
+  // Determinar estilo
+  function calcularEstilo(res) {
+    const {A,B,C} = res;
+
+    if (A > 0 && B === 0 && C === 0) {
+      return {
+        titulo: "🔥 MODO YNGWIE ABSOLUTO 🔥",
+        texto: "Has contestado TODO en modo Yngwie. La púa tiembla, el metrónomo sufre y el universo del shred te saluda.",
+        emoji: "🔥",
+        secreto: true
+      };
+    }
+
+    if (A > B && A > C) {
+      return {
+        titulo: "SUMO SACERDOTE DE YNGWIE",
+        texto: "Sabes más de Yngwie que la mayoría de tu familia. Reconoces un sweep suyo a kilómetros.",
+        emoji: "🔥"
+      };
+    }
+
+    if (B > A && B > C) {
+      return {
+        titulo: "SHREDDER ILUSTRADO",
+        texto: "Amas a Yngwie, pero compartes el altar con otros dioses del mástil.",
+        emoji: "⚡"
+      };
+    }
+
+    if (C > A && C > B) {
+      return {
+        titulo: "AGENTE DEL CAOS NEUTRAL",
+        texto: "Te alimentas de memes, fails y situaciones surrealistas.",
+        emoji: "💀"
+      };
+    }
+
+    return {
+      titulo: "FAN SANO CON HUMOR",
+      texto: "Te encanta la música, las risas y un nivel justo de shred.",
+      emoji: "🎸"
+    };
+  }
+
+  // Mostrar resultado
+  btnResult.onclick = () => {
+    const res = contar();
+    if (!res) {
+      alert("Responde las 10 preguntas.");
+      return;
+    }
+
+    const estilo = calcularEstilo(res);
+
+    resultBox.classList.remove("hidden");
+    resultBox.innerHTML =
+      `<strong>${estilo.titulo}</strong><br>` +
+      `A=${res.A}, B=${res.B}, C=${res.C}`;
+
+    overlayEmoji.textContent = estilo.emoji;
+    overlayTitle.textContent = estilo.titulo;
+    overlayText.textContent  = estilo.texto;
+    overlayExtra.textContent = `A=${res.A}, B=${res.B}, C=${res.C}`;
+    overlay.classList.remove("hidden");
+
+    if (estilo.secreto) {
+      beep(1400, 0.15);
+      setTimeout(() => beep(1800, 0.15), 180);
+      setTimeout(() => beep(2200, 0.15), 360);
+    } else {
+      beep();
+    }
+  };
+
+  btnCloseOverlay.onclick = () => {
+    overlay.classList.add("hidden");
+  };
+
+  // Ranking
+  const ranking=[];
+  btnSave.onclick = () => {
+    const res = contar();
+    if (!res) return;
+
+    const estilo = calcularEstilo(res);
+    const nombre = (playerName.value || "Jugador").trim();
+
+    ranking.push({nombre, estilo: estilo.titulo});
+
+    rankingList.innerHTML = ranking
+      .map(r => `<li>${r.nombre} – ${r.estilo}</li>`)
+      .join("");
+
+    rankingBox.classList.remove("hidden");
+  };
+
+});
+</script>
+
+</body>
+</html>
